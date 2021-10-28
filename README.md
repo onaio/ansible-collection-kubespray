@@ -18,11 +18,11 @@ git clone --recursive git@github.com:opensrp/playbooks.git && cd playbooks
 
 ### Install the dependencies for ansible to run the kubespray playbook
 
-Install dependencies from `requirements.txt`
+Install dependencies
 
 ```shell
 pip3 install -r collections/ansible_collections/onaio/kubespray/external/kubespray/requirements.txt
-pip3 install -r requirements/kubernetes.pip
+pip3 install -r collections/ansible_collections/onaio/kubespray/requirements/base.pip
 ```
 
 ### Install ansible collections and roles
