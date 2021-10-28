@@ -10,10 +10,21 @@ In addition to the [official kubespray requirements](https://github.com/kubernet
 
 ## Environment Setup and Preparation
 
-Clone this repository with its Git submodules:
+We recommend using this collection as a git submodule to your playbook repository. Do this by running:
 
 ```sh
-git clone --recursive git@github.com:opensrp/playbooks.git && cd playbooks
+git submodule add https://github.com/onaio/ansible-collection-kubespray.git collections/ansible_collections/onaio/kubespray
+```
+
+Then make sure the git submodules of the collection i.e kubespray and ansible nfs role are fetched by running below on the repo's root:
+```sh
+git submodule update --init --recursive
+```
+
+Create an ansible playbook on the root of your repo with the following contents (for our use case in this doc its called `kubernetes.yml`):
+```yml
+---
+- import_playbook: collections/ansible_collections/onaio/kubespray/playbooks/kubespray.yml
 ```
 
 ### Install the dependencies for ansible to run the kubespray playbook
@@ -23,15 +34,6 @@ Install dependencies
 ```shell
 pip3 install -r collections/ansible_collections/onaio/kubespray/external/kubespray/requirements.txt
 pip3 install -r collections/ansible_collections/onaio/kubespray/requirements/base.pip
-```
-
-### Install ansible collections and roles
-
-Install the [Ansible Galaxy](https://docs.ansible.com/ansible/latest/reference\_appendices/galaxy.html) requirements using these commands:
-
-```sh
-ansible-galaxy role install -r requirements/ansible-galaxy.yml -p ~/.ansible/roles/opensrp
-ansible-galaxy collection install -r requirements/ansible-galaxy.yml -p ~/.ansible/collections/opensrp
 ```
 
 ### Copy `collections/ansible_collections/onaio/kubespray/external/kubespray/inventory/sample/` as `inventories/<project>/kubernetes/<cluster-name>`
