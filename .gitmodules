@@ -1,0 +1,6 @@
+[submodule "external/kubespray"]
+	path = external/kubespray
+	url = https://github.com/kubernetes-sigs/kubespray.git
+[submodule "roles/nfs"]
+	path = roles/nfs
+	url = https://github.com/geerlingguy/ansible-role-nfs.git
