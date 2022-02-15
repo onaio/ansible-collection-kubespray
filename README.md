@@ -77,6 +77,8 @@ supplementary_addresses_in_ssl_keys: []
 
 You can also see that the `kube_network_plugin` is by default set to 'calico'.
 
+Ensure you have specified the metallb ip range. e.g 192.168.100.2/32 in `metallb_ip_range` config of `inventories/<project>/kubernetes/<cluster-name>/group_vars/k8s_cluster/addons.yml`.
+
 ## Deploying the cluster
 
 To deploy Kubespray with Ansible Playbook - run the playbook as root. The option `--become` is required, as for example writing SSL keys in /etc/, installing packages and interacting with various systemd daemons, without --become the playbook will fail to run!
@@ -101,8 +103,26 @@ kubectl -n ingress-nginx get svc ingress-nginx-controller -o jsonpath='{.status.
 ### Update the following values in all.yml of your inventory accordingly
 
 ```yaml
+kubespray_setup_type: "on-prem"
+
+kubespray_nfs_provisioner:
+  chart_version: ""
+
+kubespray_ingress_nginx_controller:
+  chart_version: ""
+
+kubespray_acme_cluster_issuer:
+  email: "your-email@me"
+
+cert_manager:
+  version: v1.7.1
+
+nfs:
+  server: "{{ hostvars['<node>']['ip'] }}"
+
 # external ip for ingress nginx controller with port it maps to usually 80/443
 # any another service to be accessed external on a custom port can be added here, provided it has an LoadBalancer service type.
+# it matches the ip used for metallb 'metallb_ip_range' config mentioned above.
 port_ip_map:
   - 192.168.100.2:80
   - 192.168.100.2:443
