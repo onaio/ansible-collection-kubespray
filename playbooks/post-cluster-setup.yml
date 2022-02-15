@@ -4,12 +4,12 @@
   pre_tasks:
     - name: Install pip3
       become: true
-      apt:
+      package:
         name:
           - python3-pip
           - python
         state: present
-# Required for kubernetes.core.k8s module
+    # Required for kubernetes.core.k8s module
     - name: Install openshift python package
       pip:
         name: openshift
