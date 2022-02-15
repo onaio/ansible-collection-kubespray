@@ -3,6 +3,25 @@
   hosts: k8s_cluster
   become: yes
   tasks:
+    - name: Install iptables
+      package:
+        name:
+          - iptables
+        state: present
+    - name: Install cron
+      package:
+        name:
+          - cron
+        state: present
+      when:
+        - ansible_os_family == 'Debian'
+    - name: Install cronie
+      package:
+        name:
+          - cronie
+        state: present
+      when:
+        - ansible_os_family == 'RedHat'
     - name: Create scripts directory if it does not exist
       file:
         path: $HOME/deployment/scripts
