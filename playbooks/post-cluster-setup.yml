@@ -55,6 +55,7 @@
             - { repo_url: "{{ nfs_provisioner.chart_repo_url }}", chart_name: "{{ nfs_provisioner.chart_ref }}" }
           tags:
             - add-helm-nfs-provisioner-chart-repo
+            - helm-install-nfs-provisioner
 
         - name: Add ingress nginx chart repository
           kubernetes.core.helm_repository:
@@ -64,6 +65,7 @@
             - { repo_url: "{{ ingress_nginx.chart_repo_url }}", chart_name: "{{ ingress_nginx.chart_ref }}" }
           tags:
             - add-helm-ingress-nginx-chart-repo
+            - helm-install-ingress-nginx
 
         - name: Helm Install Ingress Nginx
           kubernetes.core.helm:
