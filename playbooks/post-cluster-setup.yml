@@ -6,8 +6,8 @@
       become: true
       package:
         name:
+          - python3
           - python3-pip
-          - python
         state: present
     # Required for kubernetes.core.k8s module
     - name: Install openshift python package
@@ -18,7 +18,7 @@
       block:
           - name: Download cert-manager manifest to the cluster.
             get_url:
-              url: "https://github.com/jetstack/cert-manager/releases/download/{{ cert_manager.version }}/cert-manager.yaml"
+              url: "{{ cert_manager.manifest_url | default('https://github.com/jetstack/cert-manager/releases/download') }}/{{ cert_manager.version }}/{{ cert_manager.file_name | default('cert-manager.yaml') }}"
               dest: /tmp/cert-manager.yaml
               mode: '0664'
 
@@ -47,15 +47,23 @@
       become: true
       become_user: root
       block:
-        - name: Add chart repositories
+        - name: Add nfs provisoner chart repository
           kubernetes.core.helm_repository:
              name: "{{ item.chart_name }}"
              repo_url: "{{ item.repo_url }}"
           with_items:
             - { repo_url: "{{ nfs_provisioner.chart_repo_url }}", chart_name: "{{ nfs_provisioner.chart_ref }}" }
+          tags:
+            - add-helm-nfs-provisioner-chart-repo
+
+        - name: Add ingress nginx chart repository
+          kubernetes.core.helm_repository:
+            name: "{{ item.chart_name }}"
+            repo_url: "{{ item.repo_url }}"
+          with_items:
             - { repo_url: "{{ ingress_nginx.chart_repo_url }}", chart_name: "{{ ingress_nginx.chart_ref }}" }
           tags:
-            - add-helm-charts-repositories
+            - add-helm-ingress-nginx-chart-repo
 
         - name: Helm Install Ingress Nginx
           kubernetes.core.helm:
@@ -67,7 +75,7 @@
             chart_ref: "{{ ingress_nginx.chart_ref }}"
             state: present
           tags:
-            - helm-install-nfs-provisioner
+            - helm-install-ingress-nginx
 
         - name: Helm Install Nfs Provisioner
           kubernetes.core.helm:
@@ -81,7 +89,6 @@
             state: present
           tags:
             - helm-install-nfs-provisioner
-
       run_once: true
       tags:
         - deploy-helm-releases
