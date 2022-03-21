@@ -75,6 +75,7 @@
             update_repo_cache: yes
             chart_repo_url: "{{ ingress_nginx.chart_repo_url }}"
             chart_ref: "{{ ingress_nginx.chart_ref }}"
+            chart_version: "{{ ingress_nginx.chart_version }}"
             state: present
           tags:
             - helm-install-ingress-nginx
@@ -87,6 +88,7 @@
             update_repo_cache: yes
             chart_repo_url: "{{ nfs_provisioner.chart_repo_url }}"
             chart_ref: "{{ nfs_provisioner.chart_ref }}"
+            chart_version: "{{ nfs_provisioner.chart_version }}"
             values: "{{ lookup('template', '../templates/nfs-provisioner-values.yml.j2') | from_yaml }}"
             state: present
           tags:
