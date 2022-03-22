@@ -35,13 +35,11 @@
       when:
         - setup_nfs | bool
         - ansible_os_family == 'Debian'
-
     - name: Install nfs utils.
       package: name=nfs-utils state=present
       when:
         - setup_nfs | bool
         - ansible_os_family == 'RedHat'
-
   tags:
     - nfs-setup
     - setup-nfs-client
