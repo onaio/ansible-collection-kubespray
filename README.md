@@ -107,9 +107,18 @@ kubespray_setup_type: "on-prem"
 
 kubespray_nfs_provisioner:
   chart_version: ""
-
+#  namespace: "nfs-provisioner"
+#  path: "/srv/nfs/storage"
+#  is_storage_class_default: true
+#  chart_repo_url: "https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner"
+#  chart_ref: "nfs-subdir-external-provisioner"
+#  release_name: "nfs-provisioner"
 kubespray_ingress_nginx_controller:
   chart_version: ""
+#  namespace: "ingress-nginx"
+#  chart_repo_url: "https://kubernetes.github.io/ingress-nginx"
+#  chart_ref: "ingress-nginx"
+#  release_name: "ingress-nginx"
 
 kubespray_acme_cluster_issuer:
   email: "your-email@me"
