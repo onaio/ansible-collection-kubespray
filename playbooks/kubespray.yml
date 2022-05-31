@@ -66,6 +66,8 @@
   tags:
     - post-cluster-setup
     - iptables-config
+  when:
+    - metallb_enabled | bool
 
 - name: "Upgrade Cluster"
   import_playbook: ../external/kubespray/upgrade-cluster.yml

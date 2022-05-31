@@ -77,6 +77,7 @@
             chart_ref: "{{ ingress_nginx.chart_ref }}"
             chart_version: "{{ ingress_nginx.chart_version }}"
             state: present
+            values: "{{ ingress_nginx.chart_values | default(omit) }}"
           tags:
             - helm-install-ingress-nginx
 

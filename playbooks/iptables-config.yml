@@ -1,5 +1,5 @@
 ---
-- name: "Add Iptables Configuration"
+- name: "Add Iptables Configuration For Metallb"
   hosts: k8s_cluster
   become: yes
   tasks:
