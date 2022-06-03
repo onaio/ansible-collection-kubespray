@@ -113,7 +113,7 @@ kubespray_nfs_provisioner:
 #  chart_repo_url: "https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner"
 #  chart_ref: "nfs-subdir-external-provisioner"
 #  release_name: "nfs-provisioner"
-#  extraValues:
+#  extraValues: |
 #    image:
 #       tag:
 
@@ -133,7 +133,9 @@ kubespray_acme_cluster_issuer:
 cert_manager:
   version: v1.7.1
 
-## metallb config (When using metallb provide uncomment the configurations below)
+## Begin metallb config (When using metallb uncomment the configurations below)
+
+## metallb config 
 
 # external ip for ingress nginx controller with port it maps to usually 80/443
 # any another service to be accessed external on a custom port can be added here, provided it has an LoadBalancer service type.
