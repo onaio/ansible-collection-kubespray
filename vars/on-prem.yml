@@ -10,28 +10,6 @@ helm_enabled: true
 etcd_deployment_type: host
 container_manager: containerd
 
-## metallb config
-
-# needed for metallb to work
-kube_proxy_strict_arp: true
-
-metallb_enabled: true
-metallb_speaker_enabled: true
-metallb_protocol: "layer2"
-metallb_port: "7472"
-
-# metallb_controller_tolerations is needed to ensure the least downtime if the node holding the metallb controller goes down.
-metallb_controller_tolerations:
-  - key: "node.kubernetes.io/unreachable"
-    operator: "Exists"
-    effect: "NoExecute"
-    tolerationSeconds: 2
-  - key: "node.kubernetes.io/not-ready"
-    operator: "Exists"
-    effect: "NoExecute"
-
-## end metallb config
-
 #nfs:
 #  server: "{{ hostvars['nodeX]['ip'] }}"
 
@@ -48,13 +26,15 @@ nfs_provisioner:
   chart_repo_url: "{{ kubespray_nfs_provisioner.chart_repo_url | default('https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner') }}"
   chart_ref: "{{ kubespray_nfs_provisioner.chart_ref | default('nfs-subdir-external-provisioner') }}"
   release_name: "{{ kubespray_nfs_provisioner.release_name | default('nfs-provisioner') }}"
+  extra_chart_values: "{{ kubespray_nfs_provisioner.extra_chart_values  | default('') }}"
 
 ingress_nginx:
   namespace: "{{ kubespray_ingress_nginx.namespace | default('ingress-nginx') }}"
-  chart_version: "{{ kubespray_ingress_nginx_controller.chart_version }}"
+  chart_version: "{{ kubespray_ingress_nginx.chart_version }}"
   chart_repo_url: "{{ kubespray_ingress_nginx.chart_repo_url | default('https://kubernetes.github.io/ingress-nginx') }}"
   chart_ref: "{{ kubespray_ingress_nginx.chart_ref | default('ingress-nginx') }}"
   release_name: "{{ kubespray_ingress_nginx.release_name | default('ingress-nginx') }}"
+  chart_values: "{{ kubespray_ingress_nginx.chart_values | default({}) }}"
 
 # Lets encrypt
 acme_cluster_issuer:

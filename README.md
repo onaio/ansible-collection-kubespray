@@ -113,12 +113,19 @@ kubespray_nfs_provisioner:
 #  chart_repo_url: "https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner"
 #  chart_ref: "nfs-subdir-external-provisioner"
 #  release_name: "nfs-provisioner"
-kubespray_ingress_nginx_controller:
+#  extraValues: |
+#    image:
+#       tag:
+
+kubespray_ingress_nginx:
   chart_version: ""
 #  namespace: "ingress-nginx"
 #  chart_repo_url: "https://kubernetes.github.io/ingress-nginx"
 #  chart_ref: "ingress-nginx"
 #  release_name: "ingress-nginx"
+#  values:
+#    controller:
+#      kind:
 
 kubespray_acme_cluster_issuer:
   email: "your-email@me"
@@ -126,18 +133,41 @@ kubespray_acme_cluster_issuer:
 cert_manager:
   version: v1.7.1
 
-nfs:
-  server: "{{ hostvars['<node>']['ip'] }}"
+## Begin metallb config (When using metallb uncomment the configurations below)
+
+## metallb config 
 
 # external ip for ingress nginx controller with port it maps to usually 80/443
 # any another service to be accessed external on a custom port can be added here, provided it has an LoadBalancer service type.
 # it matches the ip used for metallb 'metallb_ip_range' config mentioned above.
-port_ip_map:
-  - 192.168.100.2:80
-  - 192.168.100.2:443
+#port_ip_map:
+#  - 192.168.100.2:80
+#  - 192.168.100.2:443
 
-# default tunl0, if its same as the default one can omit the below variable.
-kubespray_k8s_interface: tunl0
+# needed for metallb to work
+#kube_proxy_strict_arp: true
+
+#metallb_enabled: true
+#metallb_speaker_enabled: true
+#metallb_protocol: "layer2"
+#metallb_port: "7472"
+#
+## metallb_controller_tolerations is needed to ensure the least downtime if the node holding the metallb controller goes down.
+#metallb_controller_tolerations:
+#  - key: "node.kubernetes.io/unreachable"
+#    operator: "Exists"
+#    effect: "NoExecute"
+#    tolerationSeconds: 2
+#  - key: "node.kubernetes.io/not-ready"
+#    operator: "Exists"
+#    effect: "NoExecute"
+
+# default tunl0 for calico_network_backend IPIP mode and vxlan.calico for vxlan, if its same as the default one can omit the below variable. This is needed for metallb setup.
+#kubespray_k8s_interface: tunl0
+## end metallb config
+
+nfs:
+  server: "{{ hostvars['<node>']['ip'] }}"
 ```
 
 ### Run the k8s post cluster setup play
