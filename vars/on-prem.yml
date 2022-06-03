@@ -30,7 +30,7 @@ nfs_provisioner:
 
 ingress_nginx:
   namespace: "{{ kubespray_ingress_nginx.namespace | default('ingress-nginx') }}"
-  chart_version: "{{ kubespray_ingress_nginx.chart_version | default(kubespray_ingress_nginx_controller.chart_version) }}"
+  chart_version: "{{ kubespray_ingress_nginx.chart_version }}"
   chart_repo_url: "{{ kubespray_ingress_nginx.chart_repo_url | default('https://kubernetes.github.io/ingress-nginx') }}"
   chart_ref: "{{ kubespray_ingress_nginx.chart_ref | default('ingress-nginx') }}"
   release_name: "{{ kubespray_ingress_nginx.release_name | default('ingress-nginx') }}"
