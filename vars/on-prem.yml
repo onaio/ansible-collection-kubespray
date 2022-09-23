@@ -16,17 +16,15 @@ container_manager: containerd
 # Default value for on-prem.yaml
 setup_nfs: true
 
-nfs_exports:
-  - "/srv/nfs/storage *(rw,sync,no_root_squash,no_subtree_check,no_all_squash,insecure)"
+nfs_exports: "{{ kubespray_nfs_exports }}"
+
 nfs_provisioner:
   namespace: "{{ kubespray_nfs_provisioner.namespace | default('nfs-provisioner') }}"
   chart_version: "{{ kubespray_nfs_provisioner.chart_version }}"
-  path: "{{ kubespray_nfs_provisioner.path | default('/srv/nfs/storage') }}"
-  is_storage_class_default: "{{ kubespray_nfs_provisioner.is_storage_class_default | default(true) }}"
   chart_repo_url: "{{ kubespray_nfs_provisioner.chart_repo_url | default('https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner') }}"
   chart_ref: "{{ kubespray_nfs_provisioner.chart_ref | default('nfs-subdir-external-provisioner') }}"
   release_name: "{{ kubespray_nfs_provisioner.release_name | default('nfs-provisioner') }}"
-  extra_chart_values: "{{ kubespray_nfs_provisioner.extra_chart_values  | default('') }}"
+  chart_values: "{{ kubespray_nfs_provisioner.chart_values  | default({}) }}"
 
 ingress_nginx:
   namespace: "{{ kubespray_ingress_nginx.namespace | default('ingress-nginx') }}"

@@ -169,6 +169,21 @@ cert_manager:
 nfs:
   server: "{{ hostvars['<node>']['ip'] }}"
 ```
+### Update the following values in hosts.yml of your inventory accordingly
+````
+nfs-servers:
+  hosts:
+    nfsserver:
+      ansible_host: 10.10.11.2
+      ip: 10.10.11.2
+nfs-clients:
+  hosts:
+    dbserver:
+      ansible_host: 192.168.0.7
+      ip: 192.168.0.7
+  children:
+    kube_node:
+````
 
 ### Run the k8s post cluster setup play
 

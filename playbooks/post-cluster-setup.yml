@@ -21,6 +21,8 @@
               url: "{{ cert_manager.manifest_url | default('https://github.com/jetstack/cert-manager/releases/download') }}/{{ cert_manager.version }}/{{ cert_manager.file_name | default('cert-manager.yaml') }}"
               dest: /tmp/cert-manager.yaml
               mode: '0664'
+            tags:
+              - create-cluster-issuer
 
           - name: Apply cert-mananger manifest to the cluster.
             become: true
@@ -28,6 +30,8 @@
             kubernetes.core.k8s:
               state: present
               src: /tmp/cert-manager.yaml
+            tags:
+              - create-cluster-issuer
 
           - name: Create Cluster Issuer
             become: true
@@ -90,7 +94,7 @@
             chart_repo_url: "{{ nfs_provisioner.chart_repo_url }}"
             chart_ref: "{{ nfs_provisioner.chart_ref }}"
             chart_version: "{{ nfs_provisioner.chart_version }}"
-            values: "{{ lookup('template', '../templates/nfs-provisioner-values.yml.j2') | from_yaml }}"
+            values: "{{ nfs_provisioner.chart_values | default(omit) }}"
             state: present
           tags:
             - helm-install-nfs-provisioner
