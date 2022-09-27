@@ -1,4 +1,5 @@
 ---
+# Used to write iptables configs when metallb is used
 k8s_interface: "{{ kubespray_k8s_interface | default('tunl0') }}"
 
 kubernetes_audit: true
@@ -8,13 +9,8 @@ metrics_server_enabled: true
 helm_enabled: true
 
 etcd_deployment_type: host
+
 container_manager: containerd
-
-#nfs:
-#  server: "{{ hostvars['nodeX]['ip'] }}"
-
-# Default value for on-prem.yaml
-setup_nfs: true
 
 nfs_exports: "{{ kubespray_nfs_exports }}"
 

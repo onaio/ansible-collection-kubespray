@@ -17,11 +17,13 @@ git submodule add https://github.com/onaio/ansible-collection-kubespray.git coll
 ```
 
 Then make sure the git submodules of the collection i.e kubespray and ansible nfs role are fetched by running below on the repo's root:
+
 ```sh
 git submodule update --init --recursive
 ```
 
 Create an ansible playbook on the root of your repo with the following contents (for our use case in this doc its called `kubernetes.yml`):
+
 ```yml
 ---
 - import_playbook: collections/ansible_collections/onaio/kubespray/playbooks/kubespray.yml
@@ -32,7 +34,7 @@ Create an ansible playbook on the root of your repo with the following contents 
 Install dependencies
 
 ```shell
-pip3 install -r collections/ansible_collections/onaio/kubespray/external/kubespray/requirements.txt
+pip3 install -r collections/ansible_collections/onaio/kubespray/external/kubespray/requirements-2.11.txt
 pip3 install -r collections/ansible_collections/onaio/kubespray/requirements/base.pip
 ```
 
@@ -106,26 +108,28 @@ kubectl -n ingress-nginx get svc ingress-nginx-controller -o jsonpath='{.status.
 kubespray_setup_type: "on-prem"
 
 kubespray_nfs_provisioner:
-  chart_version: ""
-#  namespace: "nfs-provisioner"
-#  path: "/srv/nfs/storage"
-#  is_storage_class_default: true
-#  chart_repo_url: "https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner"
-#  chart_ref: "nfs-subdir-external-provisioner"
-#  release_name: "nfs-provisioner"
-#  extraValues: |
+  chart_version: "4.0.17"
+  chart_ref: "nfs-subdir-external-provisioner"
+#  chart_values:
 #    image:
-#       tag:
+#      tag: v4.0.2
+#    nfs:
+#      path: /srv/nfs/storage
+#      server: 192.168.0.8
+#    storageClass:
+#      defaultClass: true
+#      accessModes: ReadWriteMany
 
 kubespray_ingress_nginx:
-  chart_version: ""
-#  namespace: "ingress-nginx"
-#  chart_repo_url: "https://kubernetes.github.io/ingress-nginx"
-#  chart_ref: "ingress-nginx"
-#  release_name: "ingress-nginx"
-#  values:
+#  chart_version: "4.2.5"
+#  chart_values:
 #    controller:
-#      kind:
+#      hostNetwork: true
+#      kind: DaemonSet
+#      dnsPolicy: ClusterFirstWithHostNet
+#      service:
+#        enableHttp: false
+#        type: ClusterIP
 
 kubespray_acme_cluster_issuer:
   email: "your-email@me"
@@ -134,8 +138,6 @@ cert_manager:
   version: v1.7.1
 
 ## Begin metallb config (When using metallb uncomment the configurations below)
-
-## metallb config 
 
 # external ip for ingress nginx controller with port it maps to usually 80/443
 # any another service to be accessed external on a custom port can be added here, provided it has an LoadBalancer service type.
@@ -165,38 +167,39 @@ cert_manager:
 # default tunl0 for calico_network_backend IPIP mode and vxlan.calico for vxlan, if its same as the default one can omit the below variable. This is needed for metallb setup.
 #kubespray_k8s_interface: tunl0
 ## end metallb config
-
-nfs:
-  server: "{{ hostvars['<node>']['ip'] }}"
 ```
-### Update the following values in hosts.yml of your inventory accordingly
-````
-nfs-servers:
-  hosts:
-    nfsserver:
-      ansible_host: 10.10.11.2
-      ip: 10.10.11.2
-nfs-clients:
-  hosts:
-    dbserver:
-      ansible_host: 192.168.0.7
-      ip: 192.168.0.7
-  children:
-    kube_node:
-````
+
+### Update the following values in hosts.yml of your inventory accordingly if you have NFS clients and/or server
+
+    nfs-servers:
+      hosts:
+        nfsserver:
+          ansible_host: 10.10.11.2
+          ip: 10.10.11.2
+    nfs-clients:
+      hosts:
+        dbserver:
+          ansible_host: 192.168.0.7
+          ip: 192.168.0.7
+      children:
+        kube_node:
 
 ### Run the k8s post cluster setup play
 
 This will setup the following:
 
-*   nfs servers & clients
-*   cert-manager & cluster issuer
-*   nfs provisioner
-*   ingress nginx controller with service type load balancer
-*   additional iptables to make cluster accessible publicly using layer2 metallb. (check the above 2 steps)
+| Setup      | Ansible tags |
+|------------|-----------------|
+|nfs servers & clients |  post-cluster-setup, nfs-setup, setup-nfs-server, setup-nfs-client   |
+|cert-manager & cluster issuer | post-cluster-setup, setup-cert-manager, create-cluster-issuer |
+|nfs provisioner | post-cluster-setup, add-helm-nfs-provisioner-chart-repo, helm-install-nfs-provisioner, deploy-helm-releases  |
+|ingress nginx controller  | post-cluster-setup, add-helm-ingress-nginx-chart-repo, helm-install-ingress-nginx, deploy-helm-releases  |
+|additional iptables to make cluster accessible publicly using layer2 metallb. (check the above 2 steps) | post-cluster-setup (applies only when `metallb_enabled` is true) |
 
 ```shell
 ansible-playbook -i inventories/<project>/kubernetes/<cluster-name> kubernetes.yml -t post-cluster-setup --extra-vars "ansible_ssh_user=ubuntu"  -e "reset_confirmation=no"
 ```
+
+There is a Gather Facts play on the kubespray that runs always. That can be skipped by appending `--skip-tags always` on your post cluster setup. 
 
 At this point you can start installing the applications to the cluster.
