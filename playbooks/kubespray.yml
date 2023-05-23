@@ -67,7 +67,7 @@
     - metallb_enabled | bool
 
 - name: "Upgrade Cluster"
-  import_playbook: ../external/kubespray/playbooks/upgrade-cluster.yml
+  import_playbook: ../external/kubespray/playbooks/upgrade_cluster.yml
   tags:
     - kubespray
     - upgrade-cluster
@@ -79,13 +79,13 @@
     - scale
 
 - name: "Recover Control Plane"
-  import_playbook: ../external/kubespray/playbooks/recover-control-plane.yml
+  import_playbook: ../external/kubespray/playbooks/recover_control_plane.yml
   tags:
     - kubespray
     - recover-control-plane
 
 - name: "Remove Node Cluster"
-  import_playbook: ../external/kubespray/playbooks/remove-node.yml
+  import_playbook: ../external/kubespray/playbooks/remove_node.yml
   tags:
     - kubespray
     - remove-node
