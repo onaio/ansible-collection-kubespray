@@ -43,13 +43,13 @@
     - post-cluster-setup
 
 - name: "Get Facts"
-  import_playbook: ../external/kubespray/facts.yml
+  import_playbook: ../external/kubespray/playbooks/facts.yml
   tags:
     - kubespray
     - get-facts
 
 - name: "Setup Cluster"
-  import_playbook: ../external/kubespray/cluster.yml
+  import_playbook: ../external/kubespray/playbooks/cluster.yml
   tags:
     - kubespray
     - cluster
@@ -67,31 +67,31 @@
     - metallb_enabled | bool
 
 - name: "Upgrade Cluster"
-  import_playbook: ../external/kubespray/upgrade-cluster.yml
+  import_playbook: ../external/kubespray/playbooks/upgrade_cluster.yml
   tags:
     - kubespray
     - upgrade-cluster
 
 - name: "Scale Cluster"
-  import_playbook: ../external/kubespray/scale.yml
+  import_playbook: ../external/kubespray/playbooks/scale.yml
   tags:
     - kubespray
     - scale
 
 - name: "Recover Control Plane"
-  import_playbook: ../external/kubespray/recover-control-plane.yml
+  import_playbook: ../external/kubespray/playbooks/recover_control_plane.yml
   tags:
     - kubespray
     - recover-control-plane
 
 - name: "Remove Node Cluster"
-  import_playbook: ../external/kubespray/remove-node.yml
+  import_playbook: ../external/kubespray/playbooks/remove_node.yml
   tags:
     - kubespray
     - remove-node
 
 - name: "Reset Cluster"
-  import_playbook: ../external/kubespray/reset.yml
+  import_playbook: ../external/kubespray/playbooks/reset.yml
   tags:
     - kubespray
     - reset

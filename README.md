@@ -8,6 +8,13 @@ This documentation outlines the steps to be taken to bring up an on premise clus
 
 In addition to the [official kubespray requirements](https://github.com/kubernetes-sigs/kubespray#requirements) and [supported linux distributions](https://github.com/kubernetes-sigs/kubespray#supported-linux-distributions), add one VM to be used outside the cluster as an NFS server.
 
+## Include library and role path for kubespray playbook on your ansible configurations
+````cfg
+....
+library = ansible-collection-kubespray/external/kubespray/library
+roles_path = roles:$VIRTUAL_ENV/usr/local/share/kubespray/roles:$VIRTUAL_ENV/usr/local/share/ansible/roles:/usr/share/kubespray/roles:ansible-collection-kubespray/external/kubespray/roles
+````
+
 ## Environment Setup and Preparation
 
 We recommend using this collection as a git submodule to your playbook repository. Do this by running:
